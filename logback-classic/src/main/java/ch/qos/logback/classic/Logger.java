@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import ch.qos.logback.classic.foreverland.logger.IBuilder;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.spi.LocationAwareLogger;
@@ -33,7 +34,7 @@ import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 
-public final class Logger implements org.slf4j.Logger, LocationAwareLogger, AppenderAttachable<ILoggingEvent>, Serializable {
+public final class Logger implements org.slf4j.Logger, LocationAwareLogger, AppenderAttachable<ILoggingEvent>, Serializable, ch.qos.logback.classic.foreverland.logger.Logger {
 
     private static final long serialVersionUID = 5454405123156820674L; // 8745934908040027998L;
 
@@ -785,5 +786,11 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
      */
     protected Object readResolve() throws ObjectStreamException {
         return LoggerFactory.getLogger(getName());
+    }
+
+    @Override
+    public void info(IBuilder builder, String format, Object... argArray) {
+        String msg = builder.builderMsg(format);
+        filterAndLog_0_Or3Plus(FQCN, null, Level.INFO, msg, argArray, null);
     }
 }
